@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TimingRouteImport } from './routes/timing'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ParticipantsRouteImport } from './routes/participants'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ResultsIndexRouteImport } from './routes/results/index'
@@ -18,6 +19,11 @@ import { Route as ResultsParticipantIdRouteImport } from './routes/results/$part
 const TimingRoute = TimingRouteImport.update({
   id: '/timing',
   path: '/timing',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ParticipantsRoute = ParticipantsRouteImport.update({
@@ -44,6 +50,7 @@ const ResultsParticipantIdRoute = ResultsParticipantIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/participants': typeof ParticipantsRoute
+  '/settings': typeof SettingsRoute
   '/timing': typeof TimingRoute
   '/results/$participantId': typeof ResultsParticipantIdRoute
   '/results/': typeof ResultsIndexRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/participants': typeof ParticipantsRoute
+  '/settings': typeof SettingsRoute
   '/timing': typeof TimingRoute
   '/results/$participantId': typeof ResultsParticipantIdRoute
   '/results': typeof ResultsIndexRoute
@@ -59,6 +67,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/participants': typeof ParticipantsRoute
+  '/settings': typeof SettingsRoute
   '/timing': typeof TimingRoute
   '/results/$participantId': typeof ResultsParticipantIdRoute
   '/results/': typeof ResultsIndexRoute
@@ -68,15 +77,23 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/participants'
+    | '/settings'
     | '/timing'
     | '/results/$participantId'
     | '/results/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/participants' | '/timing' | '/results/$participantId' | '/results'
+  to:
+    | '/'
+    | '/participants'
+    | '/settings'
+    | '/timing'
+    | '/results/$participantId'
+    | '/results'
   id:
     | '__root__'
     | '/'
     | '/participants'
+    | '/settings'
     | '/timing'
     | '/results/$participantId'
     | '/results/'
@@ -85,6 +102,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ParticipantsRoute: typeof ParticipantsRoute
+  SettingsRoute: typeof SettingsRoute
   TimingRoute: typeof TimingRoute
   ResultsParticipantIdRoute: typeof ResultsParticipantIdRoute
   ResultsIndexRoute: typeof ResultsIndexRoute
@@ -97,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/timing'
       fullPath: '/timing'
       preLoaderRoute: typeof TimingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/participants': {
@@ -133,6 +158,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ParticipantsRoute: ParticipantsRoute,
+  SettingsRoute: SettingsRoute,
   TimingRoute: TimingRoute,
   ResultsParticipantIdRoute: ResultsParticipantIdRoute,
   ResultsIndexRoute: ResultsIndexRoute,

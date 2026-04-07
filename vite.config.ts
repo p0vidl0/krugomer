@@ -7,6 +7,11 @@ import path from 'path'
 
 export default defineConfig({
   base: process.env.GITHUB_ACTIONS ? '/krugomer/' : '/',
+  define: {
+    __APP_VERSION__: JSON.stringify(process.env.npm_package_version ?? 'dev'),
+    __APP_BUILD_TIME__: JSON.stringify(new Date().toISOString()),
+    __APP_BUILD_SHA__: JSON.stringify(process.env.GITHUB_SHA?.slice(0, 7) ?? 'local'),
+  },
   plugins: [
     TanStackRouterVite({
       routesDirectory: './src/routes',
