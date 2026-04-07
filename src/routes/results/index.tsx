@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
+import * as XLSX from 'xlsx'
 import { useParticipantsStore } from '@/store/participantsStore'
 import { useResultsStore } from '@/store/resultsStore'
 import { useCompetitionStore } from '@/store/competitionStore'
 import { formatTimeShort } from '@/lib/utils'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 
 interface RankedParticipant {
@@ -54,6 +56,30 @@ const ResultsPage = () => {
 
   const lapIndices = Array.from({ length: competition.laps }, (_, i) => i)
 
+  const exportToXlsx = () => {
+    const headers = ['№', 'Участник', ...lapIndices.map((i) => `Круг ${i + 1}`), 'Итог', 'Место']
+    const rows = sorted.map((row) => {
+      const laps = lapIndices.map((i) => (row.laps[i] !== undefined ? formatTimeShort(row.laps[i]) : '—'))
+      const place = row.place ? String(row.place) : row.finished ? '—' : 'DNF'
+
+      return [
+        row.startNumber,
+        row.name,
+        ...laps,
+        row.totalTime !== undefined ? formatTimeShort(row.totalTime) : '—',
+        place,
+      ]
+    })
+
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows])
+    const workbook = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Результаты')
+
+    const competitionName = (competition.name || 'соревнование').replace(/[\\/:*?"<>|]/g, '_')
+    const stamp = new Date().toISOString().slice(0, 10)
+    XLSX.writeFile(workbook, `${competitionName}-results-${stamp}.xlsx`)
+  }
+
   if (participants.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-2">
@@ -70,10 +96,16 @@ const ResultsPage = () => {
       </div>
 
       <Tabs value={sort} onValueChange={(v) => setSort(v as typeof sort)}>
-        <TabsList>
-          <TabsTrigger value="startNumber">По номеру</TabsTrigger>
-          <TabsTrigger value="place">По месту</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <TabsList>
+            <TabsTrigger value="startNumber">По номеру</TabsTrigger>
+            <TabsTrigger value="place">По месту</TabsTrigger>
+          </TabsList>
+
+          <Button onClick={exportToXlsx} variant="outline">
+            Экспорт в XLSX
+          </Button>
+        </div>
 
         <TabsContent value={sort}>
           <div className="overflow-x-auto -mx-4 px-4">

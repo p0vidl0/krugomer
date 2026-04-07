@@ -130,7 +130,7 @@ export const ParticipantForm = ({ onAdd, onSave, onCancel, initial }: Props) => 
                   type="number"
                   min={1}
                   max={99}
-                  placeholder="48"
+                  placeholder="Напр. 48"
                   value={form.frontTeeth ?? ''}
                   onChange={(e) =>
                     setForm((f) => ({
@@ -149,7 +149,7 @@ export const ParticipantForm = ({ onAdd, onSave, onCancel, initial }: Props) => 
                   type="number"
                   min={1}
                   max={99}
-                  placeholder="14"
+                  placeholder="Напр. 14"
                   value={form.rearTeeth ?? ''}
                   onChange={(e) =>
                     setForm((f) => ({
@@ -192,7 +192,7 @@ export const ParticipantForm = ({ onAdd, onSave, onCancel, initial }: Props) => 
                   type="number"
                   min={1000}
                   max={3000}
-                  placeholder="2096"
+                  placeholder="Напр. 2096"
                   value={customCirc}
                   onChange={(e) => setCustomCirc(e.target.value)}
                   className={errors.customCirc ? 'border-destructive' : ''}

@@ -100,13 +100,11 @@ const TimingPage = () => {
               <div className="font-mono text-5xl font-bold tracking-tight tabular-nums">
                 {formatTime(displayElapsed)}
               </div>
-              <div className="text-muted-foreground text-sm">
-                Круг {Math.min((result?.laps.length ?? 0) + (timerState === 'running' ? 1 : 0), competition.laps)}{' '}
-                из {competition.laps}
-              </div>
               {timerState === 'running' && (
                 <div className="pt-3 border-t mt-3">
-                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Текущий круг</div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">
+                    Круг {Math.min((result?.laps.length ?? 0) + 1, competition.laps)} из {competition.laps}
+                  </div>
                   <div className="font-mono text-3xl font-semibold tabular-nums text-primary">
                     {formatTime(currentLapElapsed)}
                   </div>
